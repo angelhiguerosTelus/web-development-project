@@ -17,28 +17,41 @@ import OneTimeSecret from "./Apps/05 One time Secret";
 function App() {
   return (
     <Router>
-      <div>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/pomodoro">Pomodoro</Link>
-          </li>
-          <li>
-            <Link to="/masked-input">Masked Input</Link>
-          </li>
-          <li>
-            <Link to="/json-to-csv">JSON to CSV</Link>
-          </li>
-          <li>
-            <Link to="/url-shortener">URLShortener</Link>
-          </li>
-          <li>
-            <Link to="/one-time-secret">One Time Secret</Link>
-          </li>
-        </ul>
+      <div className="container">
+        <div className="level mt-5">
+          <div className="level-item">
+            <Link to="/" className="button is-info">
+              Home
+            </Link>
+          </div>
+          <div className="level-item">
+            <Link to="/pomodoro" className="button is-info">
+              Pomodoro
+            </Link>
+          </div>
+          <div className="level-item">
+            <Link to="/masked-input" className="button is-info">
+              Masked Input
+            </Link>
+          </div>
+          <div className="level-item">
+            <Link to="/json-to-csv" className="button is-info">
+              JSON to CSV
+            </Link>
+          </div>
+          <div className="level-item">
+            <Link to="/url-shortener" className="button is-info">
+              URLShortener
+            </Link>
+          </div>
+          <div className="level-item">
+            <Link to="/one-time-secret" className="button is-info">
+              One Time Secret
+            </Link>
+          </div>
+        </div>
 
+      
         <hr />
 
         {/*
@@ -80,7 +93,7 @@ function App() {
 function Home() {
   return (
     <div>
-      <h2>Home</h2>
+      <span className="title is-3">Final project - Angel Higueros </span>
     </div>
   );
 }
