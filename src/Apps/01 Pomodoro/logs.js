@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
+import { useLocalStorage } from "./useLocalStorage";
 
-
-export const Logs = () => {
+export const Logs = ({logs}) => {
 
 
   return (
@@ -15,11 +16,13 @@ export const Logs = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Descripción</td>
-              <td>Tiempo</td>
-              <td>Fecha</td>
-            </tr>
+            {logs.map((log) => (
+              <tr>
+                <td>{log.description}</td>
+                <td>{log.time}</td>
+                <td>{log.date}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

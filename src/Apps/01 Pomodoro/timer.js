@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import moment from "moment";
+import { useLocalStorage } from "./useLocalStorage";
 
-export const Timer = () => {
+export const Timer = ({logs, setLogs}) => {
   const [state, setstate] = useState(false);
   const [time, setTime] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -11,7 +13,25 @@ export const Timer = () => {
   useEffect(() => {
     setMinutes(parseInt((time / 60) % 60));
     setSeconds(parseInt(time % 60));
+
+    if (time === 0) {
+      setTime(0);
+      clearInterval(intervalId);
+      setstate(false);
+    }
   }, [time]);
+
+  const saveTimer = (time) => {
+    setLogs([
+      ...logs,
+      {
+        description:
+          time === 25 ? "Pomodoro" : time === 15 ? "Long break" : "Short break",
+        time,
+        date: moment().format("MMMM Do YYYY, h:mm:ss a"),
+      },
+    ]);
+  };
 
   const handleStartTimer = () => {
     if (time > 0) {
@@ -19,6 +39,7 @@ export const Timer = () => {
       let id = setInterval(() => {
         setTime((prev) => (prev - 1 > 0 ? prev - 1 : 0));
       }, 1000);
+      saveTimer((time / 60) % 60);
       setIntervalId(id);
     }
   };
@@ -51,7 +72,7 @@ export const Timer = () => {
             </button>
             <button
               className="button is-warning"
-              onClick={() => setTime(0.2 * 60)}
+              onClick={() => setTime(5 * 60)}
             >
               Short break
             </button>
