@@ -6,6 +6,7 @@ import PomodoroApp from "./Apps/01 Pomodoro";
 import MaskedInputApp from "./Apps/02 MaskedInput";
 import JSONtoCSV from "./Apps/03 JSONtoCSV";
 import URLShortener from "./Apps/04 URLShortener";
+import { RedirectUrl } from "./Apps/04 URLShortener/redirectUrl";
 import OneTimeSecret from "./Apps/05 One time Secret";
 
 // Although the page does not ever refresh, notice how
@@ -77,6 +78,9 @@ function App() {
           </Route>
           <Route exact path="/url-shortener">
             <URLShortener />
+          </Route>
+          <Route exact path="/redirect/:hash">
+            <RedirectUrl />
           </Route>
           <Route exact path="/one-time-secret">
             <OneTimeSecret />
