@@ -8,6 +8,7 @@ import JSONtoCSV from "./Apps/03 JSONtoCSV";
 import URLShortener from "./Apps/04 URLShortener";
 import { RedirectUrl } from "./Apps/04 URLShortener/redirectUrl";
 import OneTimeSecret from "./Apps/05 One time Secret";
+import { Secret } from "./Apps/05 One time Secret/secret";
 
 // Although the page does not ever refresh, notice how
 // React Router keeps the URL up to date as you navigate
@@ -84,6 +85,9 @@ function App() {
           </Route>
           <Route exact path="/one-time-secret">
             <OneTimeSecret />
+          </Route>
+          <Route exact path="/secret/:hash">
+            <Secret />
           </Route>
         </Switch>
       </div>
