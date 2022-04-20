@@ -1,14 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import api from "../../api";
 import "./styles.css";
-import { useLocalStorage } from "./useLocalStorage";
 
 function OneTimeSecret() {
-  const [links, setLinks] = useLocalStorage("onetimesecret", []);
   const [secret, setSecret] = useState("");
   const [urlSecret, setUrlSecret] = useState("");
 
-  
+  const [links, setLinks] = useState([]);
+
+  useEffect(() => {
+    const fetchUrls = async () => {
+      let res = await api.getSecrets();
+      setLinks(res.data);
+    };
+    fetchUrls();
+  }, []);
+
+  const setUrls = async (data) => {
+    await api.setSecrets({ secret: data });
+  };
+
   const handleExample = () => {
     setSecret("Vivo en Guatemala.");
     setUrlSecret("");
@@ -37,15 +49,18 @@ function OneTimeSecret() {
 
           let urlSecret = `${window.location.origin}/secret/${hash}`;
           setUrlSecret(urlSecret);
-          console.log(secret);
-          setLinks([
-            ...links,
-            {
-              secret: secret,
-              urlSecret,
-              times: result.value,
-            },
-          ]);
+          setLinks((prev) => {
+            let temp = [
+              ...prev,
+              {
+                secret: secret,
+                urlSecret,
+                times: result.value,
+              },
+            ];
+            setUrls(temp);
+            return temp;
+          });
         }
       });
     }
@@ -75,8 +90,8 @@ function OneTimeSecret() {
             rows="10"
             className="textarea"
             onChange={(e) => {
-              setUrlSecret('')
-              setSecret(e.target.value)
+              setUrlSecret("");
+              setSecret(e.target.value);
             }}
             value={secret}
           ></textarea>

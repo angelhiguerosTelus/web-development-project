@@ -1,29 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useLocalStorage } from "./useLocalStorage";
+import api from "../../api";
 
 export const RedirectUrl = () => {
-  const [links, setLinks] = useLocalStorage("urlshortener", []);
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState();
+  const [linksAsync, setLinks] = useState(async () => await api.getUrls());
+
+  const setUrls = async (data) => {
+    await api.setUrls({ url: data });
+  };
 
   let { hash } = useParams();
 
   useEffect(() => {
-    let temp = [];
-    links.map((link) =>
-      link.urlShort === `${window.location.origin}/redirect/${hash}`
-        ? temp.push({ ...link, times: link.times + 1 })
-        : temp.push({ ...link })
-    );
-    links.map(
-      (link) =>
-        link.urlShort === `${window.location.origin}/redirect/${hash}` &&
-        setUrl(link.url)
-    );
-    setLinks(temp);
-  }, [hash]);
+    linksAsync.then((res) => {
+      let links = res.data;
+      let temp = [];
+      links.map((link) =>
+        link.urlShort === `${window.location.origin}/redirect/${hash}`
+          ? temp.push({ ...link, times: link.times + 1 })
+          : temp.push({ ...link })
+      );
+      links.map(
+        (link) =>
+          link.urlShort === `${window.location.origin}/redirect/${hash}` &&
+          setUrl((prev) => {
+            window.location.href = link.url;
+            return link.url;
+          })
+      );
 
-  window.location.href = url;
+      setLinks(temp);
+      setUrls(temp);
+    });
+  }, [url]);
 
   return <></>;
 };

@@ -1,27 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useLocalStorage } from "./useLocalStorage";
+import api from "../../api";
 
 export const Secret = () => {
-  const [links, setLinks] = useLocalStorage("onetimesecret", []);
+  const [linksAsync, setLinks] = useState(async () => await api.getSecrets());
   const [secret, setSecret] = useState("");
+
+  const setUrls = async (data) => {
+    await api.setSecrets({ secret: data });
+  };
 
   let { hash } = useParams();
 
   useEffect(() => {
-    let temp = [];
-    links.map((link) =>
-      link.urlSecret === `${window.location.origin}/secret/${hash}`
-        ? temp.push({ ...link, times: parseInt(link.times) - 1 })
-        : temp.push({ ...link })
-    );
-    links.map((link) =>
-      link.urlSecret === `${window.location.origin}/secret/${hash}` &&
-      parseInt(link.times) > 0
-        ? setSecret(link.secret)
-        : setSecret("Este secreto ya no esta disponible.")
-    );
-    setLinks(temp);
+    linksAsync.then((res) => {
+      let links = res.data;
+      let temp = [];
+      links.map((link) =>
+        link.urlSecret === `${window.location.origin}/secret/${hash}`
+          ? temp.push({ ...link, times: parseInt(link.times) - 1 })
+          : temp.push({ ...link })
+      );
+      links.map((link) =>
+        link.urlSecret === `${window.location.origin}/secret/${hash}` &&
+        parseInt(link.times) > 0
+          ? setSecret(link.secret)
+          : setSecret("Este secreto ya no esta disponible.")
+      );
+      setLinks(temp);
+      setUrls(temp);
+    });
   }, [hash]);
 
   return (

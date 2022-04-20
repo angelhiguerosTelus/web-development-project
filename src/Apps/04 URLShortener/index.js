@@ -1,11 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import api from "../../api";
 import { Logs } from "./logs";
 import "./styles.css";
-import { useLocalStorage } from "./useLocalStorage";
 
 function URLShortenerApp() {
-  const [links, setLinks] = useLocalStorage("urlshortener", []);
+  const [links, setLinks] = useState([]);
+
+  useEffect(() => {
+    const fetchUrls = async () => {
+      let res = await api.getUrls();
+      setLinks(res.data);
+    };
+    fetchUrls();
+  }, []);
+
+  const setUrls = async (data) => {
+    await api.setUrls({ url: data });
+  };
+
   const [url, setUrl] = useState("");
   const [urlShort, setUrlShort] = useState("");
 
@@ -36,19 +49,28 @@ function URLShortenerApp() {
           let urlShort = `${window.location.origin}/redirect/${hash}`;
 
           setUrlShort(urlShort);
-          setLinks([
-            ...links,
-            {
-              url,
-              urlShort,
-              times: 0,
-            },
-          ]);
+
+          setLinks((prev) => {
+            let temp = [
+              ...prev,
+              {
+                url,
+                urlShort,
+                times: 0,
+              },
+            ];
+            setUrls(temp);
+            return temp;
+          });
         } else {
           setUrlShort(isShortened[0].urlShort);
         }
       } catch (_) {
-        Swal.fire('URL no valida', 'Debe tener un formato válido. Ej. http://localhost', 'warning')
+        Swal.fire(
+          "URL no valida",
+          "Debe tener un formato válido. Ej. http://localhost",
+          "warning"
+        );
       }
     }
   };
